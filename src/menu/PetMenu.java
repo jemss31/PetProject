@@ -18,8 +18,7 @@ public class PetMenu {
             System.out.println("2. View Pets                    |");
             System.out.println("3. Update Pet                   |");
             System.out.println("4. Delete Pet                   |");
-            System.out.println("5. Manage Appointments          |");
-            System.out.println("6. Back to Main Menu            |");
+            System.out.println("5. Back to Main Menu            |");
             System.out.println("---------------------------------");
             System.out.print("Enter your choice:              |\n");
 
@@ -39,11 +38,8 @@ public class PetMenu {
                 case 4:
                     deletePet(); 
                     break;
-                case 5:
-                    appointmentMenu();
-                    break;
             }
-        } while (choice != 6);
+        } while (choice != 5);
     }
 
     private void addPet() {
@@ -108,7 +104,7 @@ public class PetMenu {
             System.out.println("2. View Appointments                |");
             System.out.println("3. Update Appointment               |");
             System.out.println("4. Delete Appointment               |");
-            System.out.println("5. Back to Pet Menu                |");
+            System.out.println("5. Back to Main Menu                |");
             System.out.println("---------------------------------------");
             System.out.print("Enter your choice:                  |\n");
 
@@ -193,15 +189,17 @@ public class PetMenu {
         do {
             System.out.println("----------- Main Menu -----------");
             System.out.println("1. Manage Pets                  |");
-            System.out.println("2. Exit                         |");
+            System.out.println("2. Manage Appointments          |");
+            System.out.println("3. Exit                         |");
             System.out.println("---------------------------------");
             System.out.print("Enter your choice:              |\n");
             choice = scanner.nextInt();
 
             switch (choice) {
                 case 1: petMenu(); break;
+                case 2: appointmentMenu(); break; 
             }
-        } while (choice != 2);
+        } while (choice != 3);
 
         System.out.println("Exiting... Thank you for using the system!");
         scanner.close();
