@@ -195,7 +195,7 @@ public class PetMenu {
 
     private void addAppointment() {
         int petId = getValidPetId();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
 
         String description = getValidStringInput("Enter Appointment Description: ");
         double cost = getValidCost();
@@ -236,7 +236,7 @@ public class PetMenu {
     private void updateAppointment() {
         int appointmentId = getValidAppointmentId();
         int newPetId = getValidPetId();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
 
         String newDate = getValidDate("Enter new Appointment Date (YYYY-MM-DD): ");
         String newTime = getValidTime("Enter new Appointment Time (HH:MM): ");
@@ -320,7 +320,7 @@ public class PetMenu {
         System.out.println("Exiting... Thank you for using the system!");
         scanner.close();
     }
-
+        
     private void displayMainMenu() {
         System.out.println("----------- Main Menu -----------");
         System.out.println("1. Manage Pets                  |");
@@ -338,9 +338,9 @@ public class PetMenu {
                         + "FROM tbl_appointments a "
                         + "JOIN tbl_breed b ON a.ap_id = b.p_id "
                         + "ORDER BY a.a_date";
-
+        
         String[] columnHeaders = {"Appointment ID", "Pet ID", "Pet Name", "Pet Breed", "Appointment Date", "Description", "Cost"};
-        String[] columnNames = {"Appointment_ID", "Pet_ID", "Pet_Name", "Pet_Breed", "Appointment_Date", "Appointment_Description", "Appointment_Cost"};
+        String[] columnNames = {"a_id", "p_id", "p_name", "p_breed", "a_date", "a_des", "a_cost"};
 
         dbConfig.viewRecords(sqlQuery, columnHeaders, columnNames);
     }
