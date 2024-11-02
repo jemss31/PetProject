@@ -30,13 +30,13 @@ public class ReportManager {
          PreparedStatement stmt = conn.prepareStatement(sqlQuery);
          ResultSet rs = stmt.executeQuery()) {
         
-        // Display the report headers
+        
         for (String header : columnHeaders) {
             System.out.printf("%-20s", header);
         }
         System.out.println();
         
-        // Display the report data
+        
         while (rs.next()) {
             for (String columnName : columnNames) {
                 System.out.printf("%-20s", rs.getString(columnName));

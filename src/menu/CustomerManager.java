@@ -24,16 +24,22 @@ public class CustomerManager {
 
             switch (choice) {
                 case 1:
+                    viewCustomers();
                     addCustomer();
+                    viewCustomers();
                     break;
                 case 2:
                     viewCustomers();
                     break;
                 case 3:
+                    viewCustomers();
                     updateCustomer();
+                    viewCustomers();
                     break;
                 case 4:
+                    viewCustomers();
                     deleteCustomer();
+                    viewCustomers();
                     break;
             }
         } while (choice != 5);

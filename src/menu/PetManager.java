@@ -22,16 +22,22 @@ public class PetManager {
 
             switch (choice) {
                 case 1:
+                    viewPets();
                     addPet();
+                    viewPets();
                     break;
                 case 2:
                     viewPets();
                     break;
                 case 3:
+                    viewPets();
                     updatePet();
+                    viewPets();
                     break;
                 case 4:
+                    viewPets();
                     deletePet();
+                    viewPets();
                     break;
             }
         } while (choice != 5);

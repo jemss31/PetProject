@@ -34,22 +34,28 @@ public class AppointmentManager {
 
             switch (choice) {
                 case 1:
+                    viewAppointments();
                     addAppointment();
                     break;
                 case 2:
                     viewAppointments();
                     break;
                 case 3:
+                    viewAppointments();
                     updateAppointment();
                     break;
                 case 4:
+                    viewAppointments();
                     deleteAppointment();
+                    viewAppointments();
                     break;
                 case 5:
-                    updateTransactionStatus(); // New option to update transaction status
+                    viewAppointments();
+                    updateTransactionStatus();
+                    viewAppointments();
                     break;
             }
-        } while (choice != 6); // Change to 6 as we add a new option
+        } while (choice != 6);
     }
     private int getValidChoice() {
         while (true) {
@@ -60,7 +66,7 @@ public class AppointmentManager {
             }
             try {
                 int choice = Integer.parseInt(input);
-                if (choice >= 1 && choice <= 6) { // Updated range
+                if (choice >= 1 && choice <= 6) {
                     return choice;
                 } else {
                     System.out.println("Choice must be between 1 and 6. Please try again.");
@@ -72,25 +78,25 @@ public class AppointmentManager {
     }
 
    private void addAppointment() {
-    int petId = getValidPetId(); // Collecting valid Pet ID
-    int customerId = getValidCustomerId(); // Collecting valid Customer ID
-    String description = getValidStringInput("Enter Appointment Description: "); // Collecting description
-    double cost = getValidCost(); // Collecting cost
-    String status = getValidStringInput("Enter Appointment Status (paid/unpaid): "); // Collecting status
-    String date = getValidStringInput("Enter Appointment Date (YYYY-MM-DD): "); // Collecting date
+    int petId = getValidPetId(); 
+    int customerId = getValidCustomerId();
+    String description = getValidStringInput("Enter Appointment Description: ");
+    double cost = getValidCost();
+    String status = getValidStringInput("Enter Appointment Status (paid/unpaid): "); 
+    String date = getValidStringInput("Enter Appointment Date (YYYY-MM-DD): "); 
 
-    // Updated SQL statement without the ap_id parameter
+    
     String sql = "INSERT INTO tbl_appointments (a_des, a_cost, c_id, a_date, l_status) VALUES (?, ?, ?, ?, ?)";
     
     try (Connection conn = dbConfig.connectDB();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setString(1, description); // Set the description
-        stmt.setDouble(2, cost); // Set the cost
-        stmt.setInt(3, customerId); // Set the Customer ID
-        stmt.setString(4, date); // Set the appointment date
-        stmt.setString(5, status); // Set the status
+        stmt.setString(1, description); 
+        stmt.setDouble(2, cost);
+        stmt.setInt(3, customerId); 
+        stmt.setString(4, date); 
+        stmt.setString(5, status); 
 
-        stmt.executeUpdate(); // Execute the insert
+        stmt.executeUpdate(); 
         System.out.println("Appointment added successfully.");
     } catch (SQLException e) {
         System.out.println("Error adding appointment: " + e.getMessage());
