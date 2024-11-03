@@ -1,7 +1,8 @@
-package customermanager;
+package menu;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import menu.config;
@@ -54,12 +55,12 @@ public class CustomerManager {
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
                 System.out.println("Input cannot be empty. Please try again.");
-                continue; 
+                continue;
             }
             try {
                 int choice = Integer.parseInt(input);
                 if (choice >= 1 && choice <= 5) {
-                    return choice; 
+                    return choice;
                 } else {
                     System.out.println("Choice must be between 1 and 5. Please try again.");
                 }
@@ -70,27 +71,15 @@ public class CustomerManager {
     }
 
     private void addCustomer() {
-        String customerId = getValidStringInput("Customer ID: ");
+        
         String firstName = getValidStringInput("First Name: ");
         String middleName = getValidStringInput("Middle Name: ");
         String lastName = getValidStringInput("Last Name: ");
         String email = getValidStringInput("Email Address: ");
         String phone = getValidPhoneNumber("Phone Number (11 digits): ");
 
-        String sql = "INSERT INTO tbl_customer (c_id, c_fname, c_mname, c_lname, c_email, c_phone) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = dbConfig.connectDB(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, customerId);
-            stmt.setString(2, firstName);
-            stmt.setString(3, middleName);
-            stmt.setString(4, lastName);
-            stmt.setString(5, email);
-            stmt.setString(6, phone);
-            stmt.executeUpdate();
-            System.out.println("Customer registered successfully.");
-        } catch (SQLException e) {
-            System.out.println("Error registering customer: " + e.getMessage());
-        }
+        String sql = "INSERT INTO tbl_customer ( c_fname, c_mname, c_lname, c_email, c_phone) VALUES ( ?, ?, ?, ?, ?)";
+        executeUpdate(sql, firstName, middleName, lastName, email, phone);
     }
 
     private void viewCustomers() {
@@ -101,11 +90,57 @@ public class CustomerManager {
     }
 
     private void updateCustomer() {
-        // implementation to update customer
+        String customerId = getValidStringInput("Enter Customer ID to update: ");
+        if (!customerExists(customerId)) {
+            System.out.println("No customer found with ID: " + customerId);
+            return;
+        }
+
+        String newFirstName = getValidStringInput("New First Name: ");
+        String newMiddleName = getValidStringInput("New Middle Name: ");
+        String newLastName = getValidStringInput("New Last Name: ");
+        String newEmail = getValidStringInput("New Email Address: ");
+        String newPhone = getValidPhoneNumber("New Phone Number (11 digits): ");
+
+        String sql = "UPDATE tbl_customer SET c_fname = ?, c_mname = ?, c_lname = ?, c_email = ?, c_phone = ? WHERE c_id = ?";
+        executeUpdate(sql, newFirstName, newMiddleName, newLastName, newEmail, newPhone, customerId);
     }
 
     private void deleteCustomer() {
-        // implementation to delete customer
+        String customerId = getValidStringInput("Enter Customer ID to delete: ");
+        if (!customerExists(customerId)) {
+            System.out.println("No customer found with ID: " + customerId);
+            return;
+        }
+
+        String sql = "DELETE FROM tbl_customer WHERE c_id = ?";
+        executeUpdate(sql, customerId);
+    }
+
+    private void executeUpdate(String sql, String... params) {
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                stmt.setString(i + 1, params[i]);
+            }
+            stmt.executeUpdate();
+            System.out.println("Operation completed successfully.");
+        } catch (SQLException e) {
+            System.out.println("Error executing operation: " + e.getMessage());
+        }
+    }
+
+    private boolean customerExists(String customerId) {
+        String sql = "SELECT COUNT(*) FROM tbl_customer WHERE c_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("Error checking customer existence: " + e.getMessage());
+            return false;
+        }
     }
 
     private String getValidStringInput(String prompt) {
@@ -113,7 +148,7 @@ public class CustomerManager {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
             if (!input.isEmpty()) {
-                return input; 
+                return input;
             } else {
                 System.out.println("Input cannot be empty. Please try again.");
             }
@@ -125,7 +160,7 @@ public class CustomerManager {
             System.out.print(prompt);
             String phoneNumber = scanner.nextLine().trim();
             if (phoneNumber.matches("\\d{11}")) {
-                return phoneNumber; 
+                return phoneNumber;
             } else {
                 System.out.println("Invalid phone number. Please enter exactly 11 digits.");
             }

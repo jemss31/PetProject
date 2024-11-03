@@ -2,6 +2,7 @@ package menu;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -12,6 +13,17 @@ public class AppointmentManager {
     public AppointmentManager(config dbConfig, Scanner scanner) {
         this.dbConfig = dbConfig;
         this.scanner = scanner;
+    }
+    private void displayAppointmentMenu() {
+        System.out.println("----------- Appointment Menu -----------");
+        System.out.println("1. Add Appointment                  |");
+        System.out.println("2. View Appointments                |");
+        System.out.println("3. Update Appointment               |");
+        System.out.println("4. Delete Appointment               |");
+        System.out.println("5. Update Transaction Status        |"); 
+        System.out.println("6. Back to Main Menu                |");
+        System.out.println("---------------------------------------");
+        System.out.print("Enter your choice:                  ");
     }
 
     public void manageAppointments() {
@@ -34,36 +46,24 @@ public class AppointmentManager {
                     deleteAppointment();
                     break;
                 case 5:
-                    // Option to view appointment report can be included here
+                    updateTransactionStatus(); // New option to update transaction status
                     break;
             }
-        } while (choice != 6);
+        } while (choice != 6); // Change to 6 as we add a new option
     }
-
-    private void displayAppointmentMenu() {
-        System.out.println("----------- Appointment Menu -----------");
-        System.out.println("1. Add Appointment                  |");
-        System.out.println("2. View Appointments                |");
-        System.out.println("3. Update Appointment               |");
-        System.out.println("4. Delete Appointment               |");
-        System.out.println("5. Back to Main Menu                |");
-        System.out.println("---------------------------------------");
-        System.out.print("Enter your choice:                  ");
-    }
-
     private int getValidChoice() {
         while (true) {
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
                 System.out.println("Input cannot be empty. Please try again.");
-                continue; 
+                continue;
             }
             try {
                 int choice = Integer.parseInt(input);
-                if (choice >= 1 && choice <= 5) {
-                    return choice; 
+                if (choice >= 1 && choice <= 6) { // Updated range
+                    return choice;
                 } else {
-                    System.out.println("Choice must be between 1 and 5. Please try again.");
+                    System.out.println("Choice must be between 1 and 6. Please try again.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid integer.");
@@ -71,53 +71,109 @@ public class AppointmentManager {
         }
     }
 
-    private void addAppointment() {
-        int petId = getValidPetId();
-        int customerId = getValidCustomerId();
+   private void addAppointment() {
+    int petId = getValidPetId(); // Collecting valid Pet ID
+    int customerId = getValidCustomerId(); // Collecting valid Customer ID
+    String description = getValidStringInput("Enter Appointment Description: "); // Collecting description
+    double cost = getValidCost(); // Collecting cost
+    String status = getValidStringInput("Enter Appointment Status (paid/unpaid): "); // Collecting status
+    String date = getValidStringInput("Enter Appointment Date (YYYY-MM-DD): "); // Collecting date
 
-        String description = getValidStringInput("Enter Appointment Description: ");
-        double cost = getValidCost();
-        String date = getValidStringInput("Enter Appointment Date (YYYY-MM-DD): ");
+    // Updated SQL statement without the ap_id parameter
+    String sql = "INSERT INTO tbl_appointments (a_des, a_cost, c_id, a_date, l_status) VALUES (?, ?, ?, ?, ?)";
+    
+    try (Connection conn = dbConfig.connectDB();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, description); // Set the description
+        stmt.setDouble(2, cost); // Set the cost
+        stmt.setInt(3, customerId); // Set the Customer ID
+        stmt.setString(4, date); // Set the appointment date
+        stmt.setString(5, status); // Set the status
 
-        String sql = "INSERT INTO tbl_appointments (ap_id, a_des, a_cost, c_id, a_date) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = dbConfig.connectDB(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, petId);
-            stmt.setString(2, description);
-            stmt.setDouble(3, cost);
-            stmt.setInt(4, customerId);
-            stmt.setString(5, date);
-            stmt.executeUpdate();
-            System.out.println("Appointment added successfully.");
-        } catch (SQLException e) {
-            System.out.println("Error adding appointment: " + e.getMessage());
+        stmt.executeUpdate(); // Execute the insert
+        System.out.println("Appointment added successfully.");
+    } catch (SQLException e) {
+        System.out.println("Error adding appointment: " + e.getMessage());
+    }
+}
+
+   
+
+
+    private int getValidPetId() {
+        while (true) {
+            System.out.print("Enter Pet ID: ");
+            String input = scanner.nextLine().trim();
+            try {
+                int petId = Integer.parseInt(input);
+                if (petExists(petId)) {
+                    return petId;
+                } else {
+                    System.out.println("No pet found with ID: " + petId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid Pet ID.");
+            }
         }
     }
 
-    private int getValidPetId() {
-        return 0;
-        // implementation to get valid Pet ID
-    }
-
     private int getValidCustomerId() {
-        return 0;
-        // implementation to get valid Customer ID
+        while (true) {
+            System.out.print("Enter Customer ID: ");
+            String input = scanner.nextLine().trim();
+            try {
+                int customerId = Integer.parseInt(input);
+                if (customerExists(customerId)) {
+                    return customerId;
+                } else {
+                    System.out.println("No customer found with ID: " + customerId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid Customer ID.");
+            }
+        }
     }
 
     private double getValidCost() {
-        return 0;
-        // implementation to get valid cost
+        while (true) {
+            System.out.print("Enter Appointment Cost: ");
+            String input = scanner.nextLine().trim();
+            try {
+                double cost = Double.parseDouble(input);
+                if (cost >= 0) {
+                    return cost;
+                } else {
+                    System.out.println("Cost must be a positive number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid cost.");
+            }
+        }
     }
 
-    private String getValidStringInput(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine().trim();
-            if (!input.isEmpty()) {
-                return input; 
-            } else {
-                System.out.println("Input cannot be empty. Please try again.");
-            }
+    private boolean petExists(int petId) {
+        String sql = "SELECT COUNT(*) FROM tbl_breed WHERE p_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, petId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("Error checking pet existence: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean customerExists(int customerId) {
+        String sql = "SELECT COUNT(*) FROM tbl_customer WHERE c_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("Error checking customer existence: " + e.getMessage());
+            return false;
         }
     }
 
@@ -129,10 +185,104 @@ public class AppointmentManager {
     }
 
     private void updateAppointment() {
-        // implementation to update appointment
+        int appointmentId = getValidAppointmentId();
+
+        String description = getValidStringInput("Enter new Appointment Description: ");
+        double cost = getValidCost();
+        String date = getValidStringInput("Enter new Appointment Date (YYYY-MM-DD): ");
+
+        String sql = "UPDATE tbl_appointments SET a_des = ?, a_cost = ?, a_date = ? WHERE a_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, description);
+            stmt.setDouble(2, cost);
+            stmt.setString(3, date);
+            stmt.setInt(4, appointmentId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Appointment updated successfully.");
+            } else {
+                System.out.println("No appointment found with the given ID.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating appointment: " + e.getMessage());
+        }
     }
 
-    private void deleteAppointment() {
-        // implementation to delete appointment
+     private void deleteAppointment() {
+        int appointmentId = getValidAppointmentId();
+
+        String sql = "DELETE FROM tbl_appointments WHERE a_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, appointmentId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Appointment deleted successfully.");
+            } else {
+                System.out.println("No appointment found with the given ID.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error deleting appointment: " + e.getMessage());
+        }
+    }
+ private void updateTransactionStatus() {
+        int appointmentId = getValidAppointmentId();
+        String newStatus = getValidStringInput("Enter new status (paid/unpaid): ");
+
+        String sql = "UPDATE tbl_appointments SET l_status = ? WHERE a_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, appointmentId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Transaction status updated successfully.");
+            } else {
+                System.out.println("No appointment found with the given ID.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating transaction status: " + e.getMessage());
+        }
+    }
+
+    private String getValidStringInput(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if (!input.isEmpty()) {
+                return input;
+            } else {
+                System.out.println("Input cannot be empty. Please try again.");
+            }
+        }
+    }
+    private int getValidAppointmentId() {
+        while (true) {
+            System.out.print("Enter Appointment ID: ");
+            String input = scanner.nextLine().trim();
+            try {
+                int appointmentId = Integer.parseInt(input);
+                if (appointmentExists(appointmentId)) {
+                    return appointmentId;
+                } else {
+                    System.out.println("No appointment found with ID: " + appointmentId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid Appointment ID.");
+            }
+        }
+    }
+     private boolean appointmentExists(int appointmentId) {
+        String sql = "SELECT COUNT(*) FROM tbl_appointments WHERE a_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, appointmentId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("Error checking appointment existence: " + e.getMessage());
+            return false;
+        }
     }
 }
