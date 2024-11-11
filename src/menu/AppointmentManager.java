@@ -57,6 +57,7 @@ public class AppointmentManager {
             }
         } while (choice != 6);
     }
+    
     private int getValidChoice() {
         while (true) {
             String input = scanner.nextLine().trim();
@@ -169,7 +170,6 @@ public class AppointmentManager {
             return false;
         }
     }
-
     private boolean customerExists(int customerId) {
         String sql = "SELECT COUNT(*) FROM tbl_customer WHERE c_id = ?";
         try (Connection conn = dbConfig.connectDB();
@@ -182,7 +182,7 @@ public class AppointmentManager {
             return false;
         }
     }
-
+    
     private void viewAppointments() {
         String sqlQuery = "SELECT * FROM tbl_appointments";
         String[] columnHeaders = {"Appointment ID", "Pet ID", "Description", "Cost", "Date"};

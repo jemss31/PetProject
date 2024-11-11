@@ -14,7 +14,7 @@ public class ReportManager {
         this.dbConfig = dbConfig;
         this.scanner = scanner;
     }
-
+    
    public void viewAppointmentReport() {
     String sqlQuery = "SELECT l.a_id AS appointment_id, l.ap_id AS pet_id, " +
                       "c.c_fname || ' ' || c.c_lname AS customer_name, " +

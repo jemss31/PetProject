@@ -14,11 +14,13 @@ public class PetMenu {
     private CustomerManager customerManager;
     private ReportManager reportManager;
 
+
     public PetMenu() {
         petManager = new PetManager(dbConfig, scanner);
-        appointmentManager = new AppointmentManager(dbConfig, scanner);
+        appointmentManager = new AppointmentManager(dbConfig, scanner );
         customerManager = new CustomerManager(dbConfig, scanner);
         reportManager = new ReportManager(dbConfig, scanner);
+
     }
 
    
@@ -76,6 +78,7 @@ public class PetMenu {
             }
         }
     }
+      
      private void updateTransactionStatus() {
         int appointmentId = getValidAppointmentId();
         String newStatus = getValidStringInput("Enter new status (paid/unpaid): ");
