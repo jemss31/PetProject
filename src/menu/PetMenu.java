@@ -141,14 +141,25 @@ public class PetMenu {
     }
 
     private void displayMainMenu() {
-        System.out.println("----------- Main Menu -----------");
-        System.out.println("1. Manage Customers             |");              
-        System.out.println("2. Manage Pets                  |");
+        System.out.println("----------- Main Menu -----------       /|_/| ");
+        System.out.println("1. Manage Customers             |      ( ^.^ )");              
+        System.out.println("2. Manage Pets                  |       > ^ <");
         System.out.println("3. Manage Appointments          |");
-        System.out.println("4. View Appointment Report      |");
-        System.out.println("5. Update Transaction Status    |"); 
-        System.out.println("6. Exit                         |");
+        System.out.println("4. View Appointment Report      |       /|_/| ");
+        System.out.println("5. Update Transaction Status    |      ( o.o )"); 
+        System.out.println("6. Exit                         |       > ^ <");
         System.out.println("---------------------------------");
+        System.out.println("   @..@          ,___,              ,~,");
+        System.out.println("  (----)         [O.o]           ,-'__ `-, ");
+        System.out.println(" ( >__< )        /)__)          {,-'  `. }              ,') ");
+        System.out.println("  ^^  ^^       --'--'--        ,( a )   `-.__         ,',')~,");
+        System.out.println("                              <=.) (         `-.__,==' ' ' '}");
+        System.out.println("                                (   )                      /)");
+        System.out.println("                                 `-'|   ,                    )");
+        System.out.println("                                     |  \\        `~.        /");
+        System.out.println("                                     \\   `._        \\      /");
+        System.out.println("                                       \\   `._____,'    ,'");
+        System.out.println("                                          `-.________,-' ");
         System.out.print("Enter your choice:              ");
     }
 
