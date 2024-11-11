@@ -44,6 +44,7 @@ public class PetMenu {
                     reportManager.viewAppointmentReport();
                     break;
                 case 5:
+                    appointmentManager.viewAppointments();
                     updateTransactionStatus(); 
                     break;
                 case 6:

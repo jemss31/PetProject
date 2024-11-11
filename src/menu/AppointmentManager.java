@@ -183,7 +183,7 @@ public class AppointmentManager {
         }
     }
     
-    private void viewAppointments() {
+    public void viewAppointments() {
         String sqlQuery = "SELECT * FROM tbl_appointments";
         String[] columnHeaders = {"Appointment ID", "Pet ID", "Description", "Cost", "Date"};
         String[] columnNames = {"a_id", "ap_id", "a_des", "a_cost", "a_date"};
