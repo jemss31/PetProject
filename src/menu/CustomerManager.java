@@ -88,7 +88,7 @@ public class CustomerManager {
         executeUpdate(sql, firstName, middleName, lastName, email, phone);
     }
 
-    private void viewCustomers() {
+    void viewCustomers() {
         String sqlQuery = "SELECT * FROM tbl_customer";
         String[] columnHeaders = {"Customer ID", "First Name", "Middle Name", "Last Name", "Email", "Phone"};
         String[] columnNames = {"c_id", "c_fname", "c_mname", "c_lname", "c_email", "c_phone"};

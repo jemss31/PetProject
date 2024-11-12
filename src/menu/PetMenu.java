@@ -14,17 +14,36 @@ public class PetMenu {
     private CustomerManager customerManager;
     private ReportManager reportManager;
 
-
     public PetMenu() {
         petManager = new PetManager(dbConfig, scanner);
-        appointmentManager = new AppointmentManager(dbConfig, scanner );
+        appointmentManager = new AppointmentManager(dbConfig, scanner);
         customerManager = new CustomerManager(dbConfig, scanner);
         reportManager = new ReportManager(dbConfig, scanner);
-
     }
-
-   
- public void mainMenu() {
+ private void displayMainMenu() {
+        System.out.println("----------- Main Menu -----------       /|_/| ");
+        System.out.println("1. Manage Customers             |      ( ^.^ )");              
+        System.out.println("2. Manage Pets                  |       > ^ <");
+        System.out.println("3. Manage Appointments          |");
+        System.out.println("4. View Appointment Report      |       /|_/| ");
+        System.out.println("5. View Individual Report       |      ( o.o )");  // New option for individual report
+        System.out.println("6. Update Transaction Status    |       > ^ <");
+        System.out.println("7. Exit                         |");
+        System.out.println("---------------------------------");
+        System.out.println("   @..@          ,___,              ,~,");
+        System.out.println("  (----)         [O.o]           ,-'__ `-, ");
+        System.out.println(" ( >__< )        /)__)          {,-'  `. }              ,') ");
+        System.out.println("  ^^  ^^       --'--'--        ,( a )   `-.__         ,',')~,");
+        System.out.println("                              <=.) (         `-.__,==' ' ' '}");
+        System.out.println("                                (   )                      /)");
+        System.out.println("                                 `-'|   ,                    )");
+        System.out.println("                                     |  \\        `~.        /");
+        System.out.println("                                     \\   `._        \\      /");
+        System.out.println("                                       \\   `._____,'    ,'");
+        System.out.println("                                          `-.________,-' ");
+        System.out.print("Enter your choice:              ");
+    }
+    public void mainMenu() {
         int choice;
         do {
             displayMainMenu();
@@ -44,23 +63,25 @@ public class PetMenu {
                     reportManager.viewAppointmentReport();
                     break;
                 case 5:
-                    appointmentManager.viewAppointments();
-                    updateTransactionStatus(); 
+                    customerManager.viewCustomers();
+                    reportManager.viewIndividualReport(); // Added option to view individual report
                     break;
                 case 6:
+                    
+                    appointmentManager.viewAppointments();
+                    updateTransactionStatus();
+                    break;
+                case 7:
                     System.out.println("Exiting... Thank you for using the system!");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-        } while (choice != 6);
+        } while (choice != 7);
         scanner.close();
     }
 
-   
-
-    
-      private int getValidChoice() {
+    private int getValidChoice() {
         while (true) {
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
@@ -69,18 +90,18 @@ public class PetMenu {
             }
             try {
                 int choice = Integer.parseInt(input);
-                if (choice >= 1 && choice <= 6) {
+                if (choice >= 1 && choice <= 7) { // Updated to match new menu option count
                     return choice;
                 } else {
-                    System.out.println("Choice must be between 1 and 5. Please try again.");
+                    System.out.println("Choice must be between 1 and 7. Please try again."); // Updated for range 1-7
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid integer.");
             }
         }
     }
-      
-     private void updateTransactionStatus() {
+
+    private void updateTransactionStatus() {
         int appointmentId = getValidAppointmentId();
         String newStatus = getValidStringInput("Enter new status (paid/unpaid): ");
 
@@ -99,7 +120,8 @@ public class PetMenu {
             System.out.println("Error updating transaction status: " + e.getMessage());
         }
     }
-      private String getValidStringInput(String prompt) {
+
+    private String getValidStringInput(String prompt) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
@@ -110,7 +132,8 @@ public class PetMenu {
             }
         }
     }
-      private int getValidAppointmentId() {
+
+    private int getValidAppointmentId() {
         while (true) {
             System.out.print("Enter Appointment ID: ");
             String input = scanner.nextLine().trim();
@@ -125,8 +148,9 @@ public class PetMenu {
                 System.out.println("Invalid input. Please enter a valid Appointment ID.");
             }
         }
-      }
-         private boolean appointmentExists(int appointmentId) {
+    }
+
+    private boolean appointmentExists(int appointmentId) {
         String sql = "SELECT COUNT(*) FROM tbl_appointments WHERE a_id = ?";
         try (Connection conn = dbConfig.connectDB();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -137,31 +161,7 @@ public class PetMenu {
             System.out.println("Error checking appointment existence: " + e.getMessage());
             return false;
         }
-    
     }
 
-    private void displayMainMenu() {
-        System.out.println("----------- Main Menu -----------       /|_/| ");
-        System.out.println("1. Manage Customers             |      ( ^.^ )");              
-        System.out.println("2. Manage Pets                  |       > ^ <");
-        System.out.println("3. Manage Appointments          |");
-        System.out.println("4. View Appointment Report      |       /|_/| ");
-        System.out.println("5. Update Transaction Status    |      ( o.o )"); 
-        System.out.println("6. Exit                         |       > ^ <");
-        System.out.println("---------------------------------");
-        System.out.println("   @..@          ,___,              ,~,");
-        System.out.println("  (----)         [O.o]           ,-'__ `-, ");
-        System.out.println(" ( >__< )        /)__)          {,-'  `. }              ,') ");
-        System.out.println("  ^^  ^^       --'--'--        ,( a )   `-.__         ,',')~,");
-        System.out.println("                              <=.) (         `-.__,==' ' ' '}");
-        System.out.println("                                (   )                      /)");
-        System.out.println("                                 `-'|   ,                    )");
-        System.out.println("                                     |  \\        `~.        /");
-        System.out.println("                                     \\   `._        \\      /");
-        System.out.println("                                       \\   `._____,'    ,'");
-        System.out.println("                                          `-.________,-' ");
-        System.out.print("Enter your choice:              ");
-    }
-
-    
+   
 }
