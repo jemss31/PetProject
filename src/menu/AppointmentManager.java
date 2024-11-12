@@ -9,10 +9,18 @@ import java.util.Scanner;
 public class AppointmentManager {
     private config dbConfig;
     private Scanner scanner;
+    private PetManager petManager;
+    private CustomerManager customerManager;
+
+
 
     public AppointmentManager(config dbConfig, Scanner scanner) {
+        petManager = new PetManager(dbConfig, scanner);
+        customerManager = new CustomerManager(dbConfig, scanner);
+
         this.dbConfig = dbConfig;
         this.scanner = scanner;
+
     }
     private void displayAppointmentMenu() {
         System.out.println("----------- Appointment Menu -----------");
@@ -34,7 +42,8 @@ public class AppointmentManager {
 
             switch (choice) {
                 case 1:
-                    viewAppointments();
+                    petManager.viewPets();
+                    customerManager.viewCustomers();
                     addAppointment();
                     break;
                 case 2:
@@ -56,7 +65,7 @@ public class AppointmentManager {
                     break;
             }
         } while (choice != 6);
-    }
+    } 
     
     private int getValidChoice() {
         while (true) {
@@ -103,90 +112,10 @@ public class AppointmentManager {
         System.out.println("Error adding appointment: " + e.getMessage());
     }
 }
-
-   
-
-
-    private int getValidPetId() {
-        while (true) {
-            System.out.print("Enter Pet ID: ");
-            String input = scanner.nextLine().trim();
-            try {
-                int petId = Integer.parseInt(input);
-                if (petExists(petId)) {
-                    return petId;
-                } else {
-                    System.out.println("No pet found with ID: " + petId);
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid Pet ID.");
-            }
-        }
-    }
-
-    private int getValidCustomerId() {
-        while (true) {
-            System.out.print("Enter Customer ID: ");
-            String input = scanner.nextLine().trim();
-            try {
-                int customerId = Integer.parseInt(input);
-                if (customerExists(customerId)) {
-                    return customerId;
-                } else {
-                    System.out.println("No customer found with ID: " + customerId);
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid Customer ID.");
-            }
-        }
-    }
-
-    private double getValidCost() {
-        while (true) {
-            System.out.print("Enter Appointment Cost: ");
-            String input = scanner.nextLine().trim();
-            try {
-                double cost = Double.parseDouble(input);
-                if (cost >= 0) {
-                    return cost;
-                } else {
-                    System.out.println("Cost must be a positive number.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid cost.");
-            }
-        }
-    }
-
-    private boolean petExists(int petId) {
-        String sql = "SELECT COUNT(*) FROM tbl_breed WHERE p_id = ?";
-        try (Connection conn = dbConfig.connectDB();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, petId);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next() && rs.getInt(1) > 0;
-        } catch (SQLException e) {
-            System.out.println("Error checking pet existence: " + e.getMessage());
-            return false;
-        }
-    }
-    private boolean customerExists(int customerId) {
-        String sql = "SELECT COUNT(*) FROM tbl_customer WHERE c_id = ?";
-        try (Connection conn = dbConfig.connectDB();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, customerId);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next() && rs.getInt(1) > 0;
-        } catch (SQLException e) {
-            System.out.println("Error checking customer existence: " + e.getMessage());
-            return false;
-        }
-    }
-    
     public void viewAppointments() {
         String sqlQuery = "SELECT * FROM tbl_appointments";
-        String[] columnHeaders = {"Appointment ID", "Pet ID", "Description", "Cost", "Date"};
-        String[] columnNames = {"a_id", "ap_id", "a_des", "a_cost", "a_date"};
+        String[] columnHeaders = {"Appointment ID", "Customer ID", "Description", "Cost", "Date"};
+        String[] columnNames = {"a_id", "c_id", "a_des", "a_cost", "a_date"};
         dbConfig.viewRecords(sqlQuery, columnHeaders, columnNames);
     }
 
@@ -288,6 +217,81 @@ public class AppointmentManager {
             return rs.next() && rs.getInt(1) > 0;
         } catch (SQLException e) {
             System.out.println("Error checking appointment existence: " + e.getMessage());
+            return false;
+        }
+    }
+      private int getValidPetId() {
+        while (true) {
+            System.out.print("Enter Pet ID: ");
+            String input = scanner.nextLine().trim();
+            try {
+                int petId = Integer.parseInt(input);
+                if (petExists(petId)) {
+                    return petId;
+                } else {
+                    System.out.println("No pet found with ID: " + petId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid Pet ID.");
+            }
+        }
+    }
+
+    private int getValidCustomerId() {
+        while (true) {
+            System.out.print("Enter Customer ID: ");
+            String input = scanner.nextLine().trim();
+            try {
+                int customerId = Integer.parseInt(input);
+                if (customerExists(customerId)) {
+                    return customerId;
+                } else {
+                    System.out.println("No customer found with ID: " + customerId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid Customer ID.");
+            }
+        }
+    }
+
+    private double getValidCost() {
+        while (true) {
+            System.out.print("Enter Appointment Cost: ");
+            String input = scanner.nextLine().trim();
+            try {
+                double cost = Double.parseDouble(input);
+                if (cost >= 0) {
+                    return cost;
+                } else {
+                    System.out.println("Cost must be a positive number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid cost.");
+            }
+        }
+    }
+
+    private boolean petExists(int petId) {
+        String sql = "SELECT COUNT(*) FROM tbl_breed WHERE p_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, petId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("Error checking pet existence: " + e.getMessage());
+            return false;
+        }
+    }
+    private boolean customerExists(int customerId) {
+        String sql = "SELECT COUNT(*) FROM tbl_customer WHERE c_id = ?";
+        try (Connection conn = dbConfig.connectDB();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("Error checking customer existence: " + e.getMessage());
             return false;
         }
     }

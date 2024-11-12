@@ -77,7 +77,7 @@ public class PetManager {
     private void addPet() {
         String name = getValidStringInput("Enter Pet Name: ");
         String breed = getValidStringInput("Enter Pet Breed: ");
-
+        
         String sql = "INSERT INTO tbl_breed (p_name, p_breed) VALUES (?, ?)";
         try (Connection conn = dbConfig.connectDB(); 
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -102,7 +102,7 @@ public class PetManager {
         }
     }
 
-    private void viewPets() {
+    public void viewPets() {
         String sqlQuery = "SELECT * FROM tbl_breed";
         String[] columnHeaders = {"Pet ID", "Name", "Breed"};
         String[] columnNames = {"p_id", "p_name", "p_breed"};

@@ -26,7 +26,7 @@ public class PetMenu {
         System.out.println("2. Manage Pets                  |       > ^ <");
         System.out.println("3. Manage Appointments          |");
         System.out.println("4. View Appointment Report      |       /|_/| ");
-        System.out.println("5. View Individual Report       |      ( o.o )");  // New option for individual report
+        System.out.println("5. View Individual Report       |      ( o.o )");
         System.out.println("6. Update Transaction Status    |       > ^ <");
         System.out.println("7. Exit                         |");
         System.out.println("---------------------------------");
@@ -64,7 +64,7 @@ public class PetMenu {
                     break;
                 case 5:
                     customerManager.viewCustomers();
-                    reportManager.viewIndividualReport(); // Added option to view individual report
+                    reportManager.viewIndividualReport(); 
                     break;
                 case 6:
                     
@@ -90,10 +90,10 @@ public class PetMenu {
             }
             try {
                 int choice = Integer.parseInt(input);
-                if (choice >= 1 && choice <= 7) { // Updated to match new menu option count
+                if (choice >= 1 && choice <= 7) { 
                     return choice;
                 } else {
-                    System.out.println("Choice must be between 1 and 7. Please try again."); // Updated for range 1-7
+                    System.out.println("Choice must be between 1 and 7. Please try again."); 
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid integer.");

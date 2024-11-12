@@ -24,7 +24,7 @@ public class ReportManager {
                           "JOIN tbl_customer c ON l.c_id = c.c_id";
         
         String[] columnHeaders = {"Appointment ID", "Pet ID", "Customer Name", "Date", "Description", "Cost", "Status"};
-        int[] columnWidths = {15, 10, 20, 12, 25, 10, 10}; // Define column widths for alignment
+        int[] columnWidths = {15, 10, 20, 12, 25, 10, 10}; 
 
         displayTable(sqlQuery, columnHeaders, columnWidths);
     }
